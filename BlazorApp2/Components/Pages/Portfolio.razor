@@ -1,0 +1,29 @@
+﻿@page "/portfolio"
+@inject BlazorApp2.Data.ApplicationDbContext DB
+
+<PageTitle>Portfolio</PageTitle>
+
+<h1>Portfolio</h1>
+
+<div class="container mt-3">
+    <div class="row">
+        @foreach (var project in DB.PortfolioItems)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card text-dark">
+                    <img src="@project.ImageUrl" class="card-img-top" alt="Project Image">
+                    <div class="card-body">
+                        <h5 class="card-title">@project.Title</h5>
+                        <p class="card-text">@project.Description</p>
+                        <a href="@project.ProjectUrl" class="btn btn-primary" target="_blank">Visit Project</a>
+                        <div class="mt-2">
+                            <a href="@($"projects/edit?id={project.Id}")" class="btn btn-secondary">Edit</a>
+                            <a href="@($"projects/details?id={project.Id}")" class="btn btn-info">Details</a>
+                            <a href="@($"projects/delete?id={project.Id}")" class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

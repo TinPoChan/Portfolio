@@ -1,0 +1,51 @@
+﻿@page "/portfolioitems/details"
+@inject BlazorApp2.Data.ApplicationDbContext DB
+@using BlazorApp2.Data
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>PortfolioItem</h4>
+    <hr />
+    @if (portfolioitem is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Title</dt>
+            <dd class="col-sm-10">@portfolioitem.Title</dd>
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@portfolioitem.Description</dd>
+            <dt class="col-sm-2">ProjectUrl</dt>
+            <dd class="col-sm-10">@portfolioitem.ProjectUrl</dd>
+            <dt class="col-sm-2">ImageUrl</dt>
+            <dd class="col-sm-10">@portfolioitem.ImageUrl</dd>
+        </dl>
+        <div>
+            <a href="@($"/portfolioitems/edit?id={portfolioitem.Id}")">Edit</a> |
+            <a href="@($"/portfolioitems")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    PortfolioItem? portfolioitem;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        portfolioitem = await DB.PortfolioItems.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (portfolioitem is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

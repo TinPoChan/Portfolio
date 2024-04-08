@@ -1,0 +1,58 @@
+﻿@page "/portfolioitems/create"
+@inject BlazorApp2.Data.ApplicationDbContext DB
+@using BlazorApp2.Data
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>PortfolioItem</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="PortfolioItem" OnValidSubmit="AddPortfolioItem" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="title" class="form-label">Title:</label> 
+                <InputText id="title" @bind-Value="PortfolioItem.Title" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioItem.Title" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label> 
+                <InputText id="description" @bind-Value="PortfolioItem.Description" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioItem.Description" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="projecturl" class="form-label">ProjectUrl:</label> 
+                <InputText id="projecturl" @bind-Value="PortfolioItem.ProjectUrl" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioItem.ProjectUrl" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="imageurl" class="form-label">ImageUrl:</label> 
+                <InputText id="imageurl" @bind-Value="PortfolioItem.ImageUrl" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioItem.ImageUrl" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/portfolioitems">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public PortfolioItem PortfolioItem { get; set; } = new();
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddPortfolioItem()
+    {
+        DB.PortfolioItems.Add(PortfolioItem);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/portfolioitems");
+    }
+}

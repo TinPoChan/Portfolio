@@ -1,0 +1,101 @@
+﻿@page "/PortfolioItems/edit"
+@inject BlazorApp2.Data.ApplicationDbContext DB
+@using BlazorApp2.Data
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>PortfolioItem</h4>
+<hr />
+@if (PortfolioItem is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="PortfolioItem" OnValidSubmit="UpdatePortfolioItem" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="PortfolioItem.Id" value="@PortfolioItem.Id" />
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <InputText id="title" @bind-Value="PortfolioItem.Title" class="form-control" />
+                    <ValidationMessage For="() => PortfolioItem.Title" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputText id="description" @bind-Value="PortfolioItem.Description" class="form-control" />
+                    <ValidationMessage For="() => PortfolioItem.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="projecturl" class="form-label">ProjectUrl:</label>
+                    <InputText id="projecturl" @bind-Value="PortfolioItem.ProjectUrl" class="form-control" />
+                    <ValidationMessage For="() => PortfolioItem.ProjectUrl" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="imageurl" class="form-label">ImageUrl:</label>
+                    <InputText id="imageurl" @bind-Value="PortfolioItem.ImageUrl" class="form-control" />
+                    <ValidationMessage For="() => PortfolioItem.ImageUrl" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/portfolioitems">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public PortfolioItem? PortfolioItem { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        PortfolioItem ??= await DB.PortfolioItems.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (PortfolioItem is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdatePortfolioItem()
+    {
+        DB.Attach(PortfolioItem!).State = EntityState.Modified;
+
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!PortfolioItemExists(PortfolioItem!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/portfolioitems");
+    }
+
+    bool PortfolioItemExists(int id)
+    {
+        return DB.PortfolioItems.Any(e => e.Id == id);
+    }
+}
