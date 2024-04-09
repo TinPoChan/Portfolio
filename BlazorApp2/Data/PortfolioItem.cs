@@ -17,5 +17,8 @@ namespace BlazorApp2.Data
 
         [Url]
         public string ImageUrl { get; set; }
+
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+
     }
 }

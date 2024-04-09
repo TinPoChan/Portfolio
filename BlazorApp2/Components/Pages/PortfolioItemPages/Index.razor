@@ -16,6 +16,7 @@
     <PropertyColumn Property="portfolioitem => portfolioitem.Description" />
     <PropertyColumn Property="portfolioitem => portfolioitem.ProjectUrl" />
     <PropertyColumn Property="portfolioitem => portfolioitem.ImageUrl" />
+    <PropertyColumn Property="portfolioitem => portfolioitem.DateCreated" />
 
     <TemplateColumn Context="portfolioitem">
         <a href="@($"portfolioitems/edit?id={portfolioitem.Id}")">Edit</a> |

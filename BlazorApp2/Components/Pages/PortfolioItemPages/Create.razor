@@ -34,6 +34,11 @@
                 <InputText id="imageurl" @bind-Value="PortfolioItem.ImageUrl" class="form-control" /> 
                 <ValidationMessage For="() => PortfolioItem.ImageUrl" class="text-danger" /> 
             </div>        
+            <div class="mb-3">
+                <label for="datecreated" class="form-label">DateCreated:</label> 
+                <InputDate id="datecreated" @bind-Value="PortfolioItem.DateCreated" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioItem.DateCreated" class="text-danger" /> 
+            </div>        
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>

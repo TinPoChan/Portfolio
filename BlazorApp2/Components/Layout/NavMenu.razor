@@ -4,7 +4,7 @@
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorApp2</a>
+        <a class="navbar-brand" href="">Eric's Portfolio</a>
     </div>
 </div>
 
@@ -19,6 +19,12 @@
         </div>
 
         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="resume">
+                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Resume
+            </NavLink>
+        </div>
+
+@*         <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
                 <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
             </NavLink>
@@ -34,7 +40,7 @@
             <NavLink class="nav-link" href="auth">
                 <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
             </NavLink>
-        </div>
+        </div> *@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="portfolio">
@@ -42,14 +48,15 @@
             </NavLink>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="portfolioitems">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Portfolio Manager
-            </NavLink>
-        </div>
+
 
         <AuthorizeView>
             <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="portfolioitems">
+                        <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Portfolio Manager
+                    </NavLink>
+                </div>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Manage">
                         <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
