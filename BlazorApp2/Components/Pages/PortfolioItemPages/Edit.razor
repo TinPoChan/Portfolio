@@ -1,4 +1,4 @@
-﻿@page "/PortfolioItems/edit"
+﻿@page "/projects/edit"
 @inject BlazorApp2.Data.ApplicationDbContext DB
 @using BlazorApp2.Data
 @inject NavigationManager NavigationManager
@@ -29,7 +29,7 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">Description:</label>
-                    <InputText id="description" @bind-Value="PortfolioItem.Description" class="form-control" />
+                    <InputTextArea id="description" @bind-Value="PortfolioItem.Description" class="form-control" />
                     <ValidationMessage For="() => PortfolioItem.Description" class="text-danger" />
                 </div>
                 <div class="mb-3">

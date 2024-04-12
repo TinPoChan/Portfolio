@@ -1,6 +1,7 @@
 ﻿@page "/"
 @inject IPortfolioService PortfolioService
 
+
 <PageTitle>Home</PageTitle>
 
 <div class="text-center">
@@ -15,23 +16,35 @@
     </div>
 </div>
 
-<div class="container">
+<div class="container mb-5">
+    <h2 class="text-center mb-4">Latest Projects</h2>
     <div class="row">
         @foreach (var project in latestItems)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card" style="border-radius: 10px;">
-                    <img src="@project.ImageUrl" class="card-img-top" style="border-radius: 10px;" alt="@project.Title">
+            <div class="col-md-4 d-flex align-items-stretch mb-4">
+                <!-- Note the d-flex and align-items-stretch -->
+                <div class="card w-100" style="border-radius: 10px;">
+                    <!-- Note the w-100 -->
+                    <img src="@project.ImageUrl" class="card-img-top" style="border-radius: 10px 10px 0 0;" alt="@project.Title">
                     <div class="card-body">
                         <h5 class="card-title">@project.Title</h5>
-                        <p class="card-text">@project.Description</p>
+                        <p>@SafeFormatDescription(project.Description)</p>
                         <a href="@project.ProjectUrl" class="btn btn-primary">View Project</a>
                     </div>
                 </div>
             </div>
         }
     </div>
+    <div class="row">
+        <div class="col text-center mt-4">
+            <a href="/portfolio" class="btn btn-secondary">View All Projects</a>
+        </div>
+    </div>
 </div>
+
+
+
+
 
 @code {
     private List<PortfolioItem> latestItems = new();
@@ -40,4 +53,17 @@
     {
         latestItems = await PortfolioService.GetLatestPortfolioItemsAsync(3);
     }
+
+    public static MarkupString SafeFormatDescription(string? description)
+    {
+        if (string.IsNullOrEmpty(description))
+            return new MarkupString(string.Empty);
+
+        // Example: Basic HTML encoding (not sufficient for all cases)
+        string encodedDescription = System.Net.WebUtility.HtmlEncode(description);
+        encodedDescription = encodedDescription.Replace("\n", "<br>");
+
+        return new MarkupString(encodedDescription);
+    }
+
 }

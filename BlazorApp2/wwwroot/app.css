@@ -58,3 +58,11 @@ hr {
     width: 50%; /* Width of the line */
     border-radius: 5px;
 }
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    object-position: top;
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+}
