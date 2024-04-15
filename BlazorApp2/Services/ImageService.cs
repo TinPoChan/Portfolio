@@ -6,47 +6,54 @@ using Microsoft.Extensions.Options;
 public class ImageService
 {
     private readonly AmazonS3Client _s3Client;
-    private readonly string? _bucketName;
-    private readonly string? _customDomain;
+    private readonly string _bucketName;
+    private readonly string _customDomain;
 
     public ImageService(IOptions<AWSSettings> awsOptions)
     {
+        if (string.IsNullOrEmpty(awsOptions.Value.BucketName) || string.IsNullOrEmpty(awsOptions.Value.ServiceURL))
+            throw new InvalidOperationException("AWS settings must be fully configured.");
+
         var config = new AmazonS3Config
         {
             ServiceURL = awsOptions.Value.ServiceURL,
-            ForcePathStyle = true // Important for S3 compatible services like R2
+            ForcePathStyle = true
         };
         _s3Client = new AmazonS3Client(awsOptions.Value.AccessKey, awsOptions.Value.SecretKey, config);
         _bucketName = awsOptions.Value.BucketName;
-        _customDomain = awsOptions.Value.CustomDomain;
+        _customDomain = awsOptions.Value.CustomDomain ?? throw new InvalidOperationException("Custom domain must be configured.");
     }
 
     public async Task<string> UploadImage(IBrowserFile file)
     {
-        var customDomain = _customDomain;
-        var newFileName = Guid.NewGuid().ToString() + "_" + file.Name;
-
+        var newFileName = CreateUniqueFileName(file.Name);
         using var stream = file.OpenReadStream(maxAllowedSize: 104857600);
-        var putRequest = new PutObjectRequest
-        {
-            BucketName = _bucketName,
-            Key = newFileName,
-            InputStream = stream,
-            ContentType = file.ContentType,
-            DisablePayloadSigning = true,
-            CannedACL = S3CannedACL.PublicRead // Set the ACL if you want the image to be publicly accessible
-        };
-
-        var response = await _s3Client.PutObjectAsync(putRequest);
+        var response = await UploadFileStream(stream, newFileName, file.ContentType);
 
         if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
         {
-            //return $"{_s3Client.Config.ServiceURL}/{_bucketName}/{newFileName}";
-            return $"https://{customDomain}/{newFileName}";
+            return $"https://{_customDomain}/{newFileName}";
         }
         else
         {
-            throw new Exception("Failed to upload image");
+            throw new Exception($"Failed to upload image. Status: {response.HttpStatusCode}");
         }
+    }
+
+    private string CreateUniqueFileName(string originalName) => Guid.NewGuid().ToString() + "_" + originalName;
+
+    private async Task<PutObjectResponse> UploadFileStream(Stream stream, string fileName, string contentType)
+    {
+        var putRequest = new PutObjectRequest
+        {
+            BucketName = _bucketName,
+            Key = fileName,
+            InputStream = stream,
+            ContentType = contentType,
+            DisablePayloadSigning = true,
+            CannedACL = S3CannedACL.PublicRead
+        };
+
+        return await _s3Client.PutObjectAsync(putRequest);
     }
 }
