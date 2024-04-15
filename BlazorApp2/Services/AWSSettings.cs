@@ -5,5 +5,5 @@
     public string? BucketName { get; set; }
     public string? Region { get; set; }
     public string? ServiceURL { get; set; }
-
+    public string? CustomDomain { get; set; }
 }

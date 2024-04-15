@@ -7,6 +7,7 @@ public class ImageService
 {
     private readonly AmazonS3Client _s3Client;
     private readonly string? _bucketName;
+    private readonly string? _customDomain;
 
     public ImageService(IOptions<AWSSettings> awsOptions)
     {
@@ -17,11 +18,12 @@ public class ImageService
         };
         _s3Client = new AmazonS3Client(awsOptions.Value.AccessKey, awsOptions.Value.SecretKey, config);
         _bucketName = awsOptions.Value.BucketName;
+        _customDomain = awsOptions.Value.CustomDomain;
     }
 
     public async Task<string> UploadImage(IBrowserFile file)
     {
-        var customDomain = "hk1bucket.ericchanhk.com";
+        var customDomain = _customDomain;
         var newFileName = Guid.NewGuid().ToString() + "_" + file.Name;
 
         using var stream = file.OpenReadStream(maxAllowedSize: 104857600);
