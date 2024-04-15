@@ -1,0 +1,28 @@
+﻿<InputFile OnChange="HandleImageUpload" class="form-control" />
+
+@code {
+    [Inject]
+    public ImageService ImageService { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnImageUploaded { get; set; }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            try
+            {
+                var imageUrl = await ImageService.UploadImage(file);
+                await OnImageUploaded.InvokeAsync(imageUrl);
+                // Optional: Show success message or perform further actions
+            }
+            catch (Exception ex)
+            {
+                // Handle errors, e.g., show an error message
+                Console.Error.WriteLine(ex.Message);
+            }
+        }
+    }
+}
