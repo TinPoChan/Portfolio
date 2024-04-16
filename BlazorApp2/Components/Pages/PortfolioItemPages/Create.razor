@@ -1,7 +1,9 @@
-﻿@page "/portfolioitems/create"
+﻿@page "/projects/create"
+@rendermode InteractiveServer
 @inject BlazorApp2.Data.ApplicationDbContext DB
 @using BlazorApp2.Data
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
 
 <PageTitle>Create</PageTitle>
 
@@ -21,7 +23,7 @@
             </div>        
             <div class="mb-3">
                 <label for="description" class="form-label">Description:</label> 
-                <InputText id="description" @bind-Value="PortfolioItem.Description" class="form-control" /> 
+                <InputTextArea id="description" @bind-Value="PortfolioItem.Description" class="form-control" />
                 <ValidationMessage For="() => PortfolioItem.Description" class="text-danger" /> 
             </div>        
             <div class="mb-3">
@@ -31,8 +33,14 @@
             </div>        
             <div class="mb-3">
                 <label for="imageurl" class="form-label">ImageUrl:</label> 
+                <ImageUpload OnImageUploaded="UpdateImageUrl" />
                 <InputText id="imageurl" @bind-Value="PortfolioItem.ImageUrl" class="form-control" /> 
                 <ValidationMessage For="() => PortfolioItem.ImageUrl" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="datecreated" class="form-label">DateCreated:</label> 
+                <InputDate id="datecreated" @bind-Value="PortfolioItem.DateCreated" class="form-control" /> 
+                <ValidationMessage For="() => PortfolioItem.DateCreated" class="text-danger" /> 
             </div>        
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
@@ -44,15 +52,19 @@
 </div>
 
 @code {
-
     [SupplyParameterFromForm]
     public PortfolioItem PortfolioItem { get; set; } = new();
 
-    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
     public async Task AddPortfolioItem()
     {
         DB.PortfolioItems.Add(PortfolioItem);
         await DB.SaveChangesAsync();
         NavigationManager.NavigateTo("/portfolioitems");
     }
+
+    private void UpdateImageUrl(string imageUrl)
+    {
+        PortfolioItem.ImageUrl = imageUrl;
+    }
+
 }

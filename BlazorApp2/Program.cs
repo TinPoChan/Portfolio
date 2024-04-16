@@ -4,6 +4,8 @@ using BlazorApp2.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using BlazorApp2.Services;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +29,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddQuickGridEntityFrameworkAdapter();;
+builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -36,6 +38,11 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+builder.Services.AddScoped<IPortfolioService, PortfolioService>();
+
+builder.Services.Configure<AWSSettings>(builder.Configuration.GetSection("AWS"));
+builder.Services.AddSingleton<ImageService>();
 
 var app = builder.Build();
 
@@ -61,5 +68,6 @@ app.MapRazorComponents<App>()
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
 
 app.Run();

@@ -1,8 +1,9 @@
-﻿@page "/PortfolioItems/edit"
+﻿@page "/projects/edit"
 @inject BlazorApp2.Data.ApplicationDbContext DB
 @using BlazorApp2.Data
 @inject NavigationManager NavigationManager
 @using Microsoft.EntityFrameworkCore
+@attribute [Authorize]
 
 <PageTitle>Edit</PageTitle>
 
@@ -29,7 +30,7 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">Description:</label>
-                    <InputText id="description" @bind-Value="PortfolioItem.Description" class="form-control" />
+                    <InputTextArea id="description" @bind-Value="PortfolioItem.Description" class="form-control" />
                     <ValidationMessage For="() => PortfolioItem.Description" class="text-danger" />
                 </div>
                 <div class="mb-3">
@@ -41,6 +42,11 @@ else
                     <label for="imageurl" class="form-label">ImageUrl:</label>
                     <InputText id="imageurl" @bind-Value="PortfolioItem.ImageUrl" class="form-control" />
                     <ValidationMessage For="() => PortfolioItem.ImageUrl" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="datecreated" class="form-label">DateCreated:</label>
+                    <InputDate id="datecreated" @bind-Value="PortfolioItem.DateCreated" class="form-control" />
+                    <ValidationMessage For="() => PortfolioItem.DateCreated" class="text-danger" />
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>

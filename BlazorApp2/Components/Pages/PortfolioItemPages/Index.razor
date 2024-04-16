@@ -2,24 +2,27 @@
 @using Microsoft.AspNetCore.Components.QuickGrid
 @inject BlazorApp2.Data.ApplicationDbContext DB
 @using BlazorApp2.Data
+@attribute [Authorize]
 
 <PageTitle>Index</PageTitle>
 
 <h1>Index</h1>
 
 <p>
-    <a href="portfolioitems/create">Create New</a>
+    <a href="projects/create">Create New</a>
 </p>
 
 <QuickGrid Class="table" Items="DB.PortfolioItems">
-    <PropertyColumn Property="portfolioitem => portfolioitem.Title" />
+    <PropertyColumn Property="portfolioitem => portfolioitem.Title"/>
     <PropertyColumn Property="portfolioitem => portfolioitem.Description" />
     <PropertyColumn Property="portfolioitem => portfolioitem.ProjectUrl" />
     <PropertyColumn Property="portfolioitem => portfolioitem.ImageUrl" />
+    <PropertyColumn Property="portfolioitem => portfolioitem.FormattedDateCreated" Title="Date Created"/>
+
 
     <TemplateColumn Context="portfolioitem">
-        <a href="@($"portfolioitems/edit?id={portfolioitem.Id}")">Edit</a> |
-        <a href="@($"portfolioitems/details?id={portfolioitem.Id}")">Details</a> |
-        <a href="@($"portfolioitems/delete?id={portfolioitem.Id}")">Delete</a>
+        <a href="@($"projects/edit?id={portfolioitem.Id}")">Edit</a> |
+        <a href="@($"projects/details?id={portfolioitem.Id}")">Details</a> |
+        <a href="@($"projects/delete?id={portfolioitem.Id}")">Delete</a>
     </TemplateColumn>
 </QuickGrid>

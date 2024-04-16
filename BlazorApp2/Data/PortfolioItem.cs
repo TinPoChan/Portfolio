@@ -10,12 +10,17 @@ namespace BlazorApp2.Data
         [Required]
         public string? Title { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Url]
-        public string ProjectUrl { get; set; }
+        public string? ProjectUrl { get; set; }
 
         [Url]
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
+
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+
+        public string FormattedDateCreated => DateCreated.ToString("dd/MM/yyyy");
+
     }
 }

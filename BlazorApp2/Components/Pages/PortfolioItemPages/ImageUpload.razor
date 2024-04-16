@@ -1,0 +1,51 @@
+﻿<InputFile OnChange="HandleImageUpload" class="form-control" />
+
+<div>
+    @if (uploading)
+    {
+        <p>Uploading... Please wait.</p>
+    }
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <p class="text-danger">@errorMessage</p>
+    }
+</div>
+
+@code {
+    [Inject]
+    public ImageService? ImageService { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnImageUploaded { get; set; }
+
+    private bool uploading = false;
+    private string errorMessage = string.Empty;
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            if (ImageService == null)
+            {
+                throw new InvalidOperationException("Image service is not initialized.");
+            }
+
+            uploading = true;
+            errorMessage = string.Empty;
+            try
+            {
+                var imageUrl = await ImageService.UploadImage(file);
+                await OnImageUploaded.InvokeAsync(imageUrl);
+                // Reset uploading state and clear errors
+                uploading = false;
+            }
+            catch (Exception ex)
+            {
+                // Provide user feedback
+                errorMessage = "Error uploading file: " + ex.Message;
+                uploading = false;
+            }
+        }
+    }
+}
